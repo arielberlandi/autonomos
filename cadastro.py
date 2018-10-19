@@ -1,9 +1,16 @@
 
 from tkinter import *
 
+
+def get():
+    if a.get() == 1:
+        print("S")
+    else:
+        return None
+    return None
+
 janela = Tk()
-
-
+janela.title("Cadastro")
 
 nome = Entry(janela)
 nome.place(x=100,y=50, width=450)
@@ -44,14 +51,12 @@ lb_codCateg.place(x=50,y=200)
 carreteiro = Label(janela, text="Carreteiro / Frete :")
 carreteiro.place(x=50,y=230)
 
-var = StringVar()
-lb_carreteiro_s = Radiobutton(janela, text=' sim ', variable=var, value="sim")
-lb_carreteiro_s.place(x=193,y=230)
-
-lb_carreteiro_n = Radiobutton(janela, text=' não ', variable=var, value="nao")
-lb_carreteiro_n.place(x=310,y=230)
+a = IntVar()
+lb_carreteiro = Checkbutton(janela,variable=a,command=get)
+lb_carreteiro.place(x=193,y=230)
 
 bt_salvar = Button(janela, text='Salvar', width=10)
 bt_salvar.place(x=430,y=300)
+
 janela.geometry("600x400+100+100")
 janela.mainloop()
