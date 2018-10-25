@@ -1,8 +1,9 @@
 from tkinter import *
 import sqlite3
 from datetime import *
+
 def cadastro () :
-    janela = Tk()
+    janela = Toplevel()
     janela.title("Cadastro")
 
     def get():
@@ -71,6 +72,7 @@ def cadastro () :
     janela.geometry("530x300+100+100")
     janela.mainloop()
     janela.destroy()
+
 def export_xml () :
     def cod():
         from xml.dom.minidom import Document
@@ -236,7 +238,7 @@ def export_xml () :
                      newl='\n')
         doc.unlink()
         print("Exportado com Sucesso")
-    export = Tk ()
+    export = Toplevel ()
     a = Button(export, text="Exportar", command=cod)
     a.place(x=250,y=55)
     lb_nis = Label(export, text="ID : ")
@@ -245,6 +247,7 @@ def export_xml () :
     wd_id.place(x=150,y=60)
     export.geometry("530x300+100+100")
     export.mainloop()
+
 def alterar () :
     def alterar_data () :
         # consertar essa parte
@@ -279,7 +282,7 @@ def alterar () :
                 print("N")
                 return "0"
 
-        janela = Tk()
+        janela = Toplevel()
         janela.title("Alterar")
         wd_id = Entry(janela)
         wd_id.place(x=100,y=20)
@@ -324,7 +327,7 @@ def alterar () :
         janela.mainloop()
     conn = sqlite3.connect('autonomos.db')
     cursor = conn.cursor()
-    alterar = Tk ()
+    alterar = Toplevel ()
     alterar.geometry("530x300+100+100")
     lbemails = Listbox(alterar,width=60)
     lbemails.place(x=25, y=40)
@@ -341,10 +344,12 @@ def alterar () :
     lbemails = Button(alterar,text="Próximo >>",command=alterar_data)
     lbemails.place(x=409, y=235)
     alterar.mainloop()
+
 def excluir () :
-    excluir = Tk ()
+    excluir = Toplevel ()
     excluir.geometry("530x300+100+100")
     excluir.mainloop()
+
 def menu () :
     menu = Tk()
     menu.title("Programa")
