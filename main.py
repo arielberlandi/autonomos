@@ -1,9 +1,24 @@
 from tkinter import *
 import sqlite3
+from datetime import *
 def cadastro () :
+    janela = Tk()
+    janela.title("Cadastro")
+
+    def get():
+        if muda.get() == 1:  # Aqui voce verifica. #
+            print("1")
+        else:
+            print("0")
+            return None  # Sempre use return none, assim ele retorna a nada, e faz com que nao fique lento. #
+        return None
+
+    muda = IntVar()  # Esse e o a
+    lb_carreteiro = Checkbutton(janela, text="text", variable=muda, command=get)
+    lb_carreteiro.place(x=153, y=230)
 
     def get_data():
-        nome_func = nome.get()
+        nome_func = str (nome.get())
         dtNascto_func = str(dtNascto.get())
         cpf_func = str(cpf.get())
         nis_func = str(nis.get())
@@ -21,13 +36,6 @@ def cadastro () :
         print('Dados inseridos com sucesso.')
         conn.close()
         janela.destroy()
-    def get():
-        if a.get() == 1:
-            return "1"
-        else:
-            return "0"
-    janela = Tk()
-    janela.title("Cadastro")
     nome = Entry(janela)
     nome.place(x=100, y=50, width=420)
     lb_nome = Label(janela, text="Nome :")
@@ -54,9 +62,6 @@ def cadastro () :
     lb_codCateg.place(x=10, y=200)
     carreteiro = Label(janela, text="Carreteiro / Frete :")
     carreteiro.place(x=10, y=230)
-    a = IntVar()
-    lb_carreteiro = Checkbutton(janela, variable=a, command=get)
-    lb_carreteiro.place(x=153, y=230)
     vrremun = Label(janela, text='Valor da Remuneração :')
     vrremun.place(x=10,y=260)
     wd_vrremun = Entry(janela)
@@ -67,14 +72,20 @@ def cadastro () :
     janela.mainloop()
     janela.destroy()
 def export_xml () :
-
-
     def cod():
         from xml.dom.minidom import Document
-
+        conn = sqlite3.connect('autonomos.db')
+        cursor = conn.cursor()
+        id = int(wd_id.get())
+        #id_1 = id -1
+        lista = []
+        cursor.execute("""
+            SELECT * FROM autonomos;
+            """)
+        for linha in cursor.fetchall():
+            lista.append(linha[0:9])
         # document create
         doc = Document()
-
         # element
         root = doc.createElement('esocial')
         evtRemun = doc.createElement('evtRemun')
@@ -99,24 +110,20 @@ def export_xml () :
         codCateg = doc.createElement('codCateg')
         infoPerApur = doc.createElement('infoPerApur')
         ideEstabLot = doc.createElement('ideEstabLot')
-
         tpInsc2 = doc.createElement('tpInsc')
         nrInsc2 = doc.createElement('nrInsc')
         codLotacao = doc.createElement('codLotacao')
         remunPerApur = doc.createElement('remunPerApur')
         itensRemun = doc.createElement('itensRemun')
-
         codRubr = doc.createElement('codRubr')
         ideTrabRubr = doc.createElement('ideTrabRubr')
         vrRubr = doc.createElement('vrRubr')
-
         infoComplCont = doc.createElement('infoComplCont')
         codCBO = doc.createElement('codCBO')
 
         # child
         doc.appendChild(root)
         root.appendChild(evtRemun)
-
         evtRemun.appendChild(ideEvento)
         ideEvento.appendChild(indRetif)
         ideEvento.appendChild(indApuracao)
@@ -124,18 +131,15 @@ def export_xml () :
         ideEvento.appendChild(tpAmb)
         ideEvento.appendChild(procEmi)
         ideEvento.appendChild(verProc)
-
         evtRemun.appendChild(ideEmpregador)
         ideEmpregador.appendChild(tpInsc)
         ideEmpregador.appendChild(nrInsc)
-
         evtRemun.appendChild(ideTrabalhador)
         ideTrabalhador.appendChild(cpfTrab)
         ideTrabalhador.appendChild(nisTrab)
         ideTrabalhador.appendChild(infoComplem)
         infoComplem.appendChild(nmTrab)
         infoComplem.appendChild(dtNascto)
-
         evtRemun.appendChild(dmDev)
         dmDev.appendChild(ideDmDev)
         dmDev.appendChild(codCateg)
@@ -144,115 +148,180 @@ def export_xml () :
         ideEstabLot.appendChild(tpInsc2)
         ideEstabLot.appendChild(nrInsc2)
         ideEstabLot.appendChild(codLotacao)
-
         ideEstabLot.appendChild(remunPerApur)
         remunPerApur.appendChild(itensRemun)
-
         itensRemun.appendChild(codRubr)
         itensRemun.appendChild(ideTrabRubr)
         itensRemun.appendChild(vrRubr)
-
         itensRemun.appendChild(codRubr)
         itensRemun.appendChild(ideTrabRubr)
         itensRemun.appendChild(vrRubr)
-
         dmDev.appendChild(infoComplCont)
         infoComplCont.appendChild(codCBO)
-
         # receive data
-        ident = str(1)
-        a = str(1)
-        b = str(1)
-        c = str(1)
-        d = str(1)
-        e = str(1)
-        f = str(1)
-        g = str(1)
-        h = str(1)
-        i = str(1)
-        j = str(1)
-        k = str(1)
-        l = str(1)
-        m = str(1)
-        n = str(1)
-        o = str(1)
-        p = str(1)
-        q = str(1)
-        r = str(1)
-
+        ident = str(lista[id-1][1])
+        a = str(1)#indretif
+        b = str(1)#indapuracao
+        data_atual = date.today()
+        c = data_atual.strftime('%Y-%m')
+        d = str(1)#tpamb
+        e = str(1)#procEmi
+        f = str("1.0")#verProc
+        g = str(1)#tpinsc
+        h = str("03582844")#nrinsc
+        i = str(lista[id-1][3])#cpf
+        j = str(lista[id-1][4])#nis
+        k = str(lista[id-1][1])#nome
+        nascimento =str(lista[id-1][2])
+        data = datetime.strptime(nascimento,"%Y%m%d").date()
+        l = str (data)#DTNASCTO
+        m = str(1)#idedmdev
+        n = str(lista[id-1][6])#codcateg
+        o = str("1")#tpinsc
+        p = str("03582844000186")#nrisnc
+        q = str("C01S000003")#codLotacao
+        r = str(lista[id-1][5])#codcbo
+        carreta = lista[id-1][8]
+        remuneracao = lista[id-1][7]
+        remun = float(remuneracao)
+        if carreta == '1' :
+            frete = remun * 0.20
+            inss = frete * 0.11
+        else :
+            frete = remun * 0.20
 
         # atributes
         root.setAttribute('xmlns', 'http://www.esocial.gov.br/schema/evt/evtRemun/v02_04_02')
         evtRemun.setAttribute('Id', ident)
-
         # text mode in child
         txt1 = doc.createTextNode(a)
         indRetif.appendChild(txt1)
-
         txt2 = doc.createTextNode(b)
         indApuracao.appendChild(txt2)
-
         txt3 = doc.createTextNode(c)
         perApur.appendChild(txt3)
-
         txt4 = doc.createTextNode(d)
         tpAmb.appendChild(txt4)
-
         txt5 = doc.createTextNode(e)
         procEmi.appendChild(txt5)
-
         txt6 = doc.createTextNode(f)
         verProc.appendChild(txt6)
-
         txt7 = doc.createTextNode(g)
         tpInsc.appendChild(txt7)
-
         txt8 = doc.createTextNode(h)
         nrInsc.appendChild(txt8)
-
         txt9 = doc.createTextNode(i)
         cpfTrab.appendChild(txt9)
-
         txt10 = doc.createTextNode(j)
         nisTrab.appendChild(txt10)
-
         txt11 = doc.createTextNode(k)
         nmTrab.appendChild(txt11)
-
         txt12 = doc.createTextNode(l)
         dtNascto.appendChild(txt12)
-
         txt13 = doc.createTextNode(m)
         ideDmDev.appendChild(txt13)
-
         txt14 = doc.createTextNode(n)
         codCateg.appendChild(txt14)
-
         txt16 = doc.createTextNode(o)
         tpInsc2.appendChild(txt16)
-
         txt17 = doc.createTextNode(p)
         nrInsc2.appendChild(txt17)
-
         txt18 = doc.createTextNode(q)
         codLotacao.appendChild(txt18)
-
         txt25 = doc.createTextNode(r)
         codCBO.appendChild(txt25)
-
         nomedoxml = ident + ".xml"
-
         doc.writexml(open(nomedoxml, 'w'),
                      addindent='    ',
                      newl='\n')
-
         doc.unlink()
+        print("Exportado com Sucesso")
     export = Tk ()
     a = Button(export, text="Exportar", command=cod)
-    a.place(x=20,y=30)
+    a.place(x=250,y=55)
+    lb_nis = Label(export, text="ID : ")
+    lb_nis.place(x=100, y=60)
+    wd_id = Entry(export,width=10)
+    wd_id.place(x=150,y=60)
     export.geometry("530x300+100+100")
     export.mainloop()
 def alterar () :
+    def alterar_data () :
+        # consertar essa parte
+        def get_id2():
+            id = wd_id.get()
+            nome = str (novo_nome.get())
+            nascto = novo_dtNascto.get()
+            cpf = novo_cpf.get()
+            nis = novo_nis.get()
+            cbo = novo_codCBO.get()
+            categoria = novo_codCateg.get()
+            carreteiro = get2()
+            remuneracao = novo_vrremun.get()
+            conn = sqlite3.connect('autonomos.db')
+            cursor = conn.cursor()
+            cursor.execute("""
+            UPDATE autonomos
+            SET nome = ?, dtnscto = ?, cpf = ?, nis = ?, codcbo = ?, codcateg = ?, carreteiro = ?, vrremun = ?
+            WHERE id = ?
+            """, (nome, nascto, cpf, nis, cbo, categoria, remuneracao, carreteiro, id))
+
+            conn.commit()
+
+            print('Dados atualizados com sucesso.')
+
+            conn.close()
+        def get2():
+            if muda2.get() == 1:
+                print("S")
+                return "1"
+            else:
+                print("N")
+                return "0"
+
+        janela = Tk()
+        janela.title("Alterar")
+        wd_id = Entry(janela)
+        wd_id.place(x=100,y=20)
+        lb_wdid = Label(janela,text="ID :")
+        lb_wdid.place(x=10,y=20)
+        novo_nome = Entry(janela)
+        novo_nome.place(x=100, y=50, width=420)
+        lb_nome = Label(janela, text="Nome :")
+        lb_nome.place(x=10, y=50)
+        novo_dtNascto = Entry(janela)
+        novo_dtNascto.place(x=160, y=80)
+        lb_dtNascto = Label(janela, text="Data de Nascimento : ")
+        lb_dtNascto.place(x=10, y=80)
+        novo_cpf = Entry(janela)
+        novo_cpf.place(x=160, y=110)
+        lb_cpf = Label(janela, text="CPF : ")
+        lb_cpf.place(x=10, y=110)
+        novo_nis = Entry(janela)
+        novo_nis.place(x=160, y=140)
+        lb_nis = Label(janela, text="NIS : ")
+        lb_nis.place(x=10, y=140)
+        novo_codCBO = Entry(janela)
+        novo_codCBO.place(x=160, y=170, width=100)
+        lb_codCBO = Label(janela, text="Código CBO : ")
+        lb_codCBO.place(x=10, y=170)
+        novo_codCateg = Entry(janela)
+        novo_codCateg.place(x=160, y=200, width=80)
+        lb_codCateg = Label(janela, text="Código Categoria :")
+        lb_codCateg.place(x=10, y=200)
+        carreteiro = Label(janela, text="Carreteiro / Frete :")
+        carreteiro.place(x=10, y=230)
+        muda2 = IntVar()
+        novo_carreteiro = Checkbutton(janela, variable=muda2, command=get2)
+        novo_carreteiro.place(x=153, y=230)
+        vrremun = Label(janela, text='Valor da Remuneração :')
+        vrremun.place(x=10, y=260)
+        novo_vrremun = Entry(janela)
+        novo_vrremun.place(x=160, y=260, width=100)
+        bt_salvar = Button(janela, text='Salvar', width=10, command=get_id2)
+        bt_salvar.place(x=410, y=255)
+        janela.geometry("530x300+100+100")
+        janela.mainloop()
     conn = sqlite3.connect('autonomos.db')
     cursor = conn.cursor()
     alterar = Tk ()
@@ -269,6 +338,8 @@ def alterar () :
     conn.close()
     lblMat = Label(alterar,text="Escolha o Item Abaixo :")
     lblMat.place(x=200,y=20)
+    lbemails = Button(alterar,text="Próximo >>",command=alterar_data)
+    lbemails.place(x=409, y=235)
     alterar.mainloop()
 def excluir () :
     excluir = Tk ()
@@ -289,4 +360,6 @@ def menu () :
     menu.mainloop()
 #programa
 menu()
+#cadastro()
+#alterar()
 #export_xml ()
