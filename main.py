@@ -1,23 +1,19 @@
 from tkinter import *
 import sqlite3
 from datetime import *
-
 def cadastro () :
     janela = Toplevel()
     janela.title("Cadastro")
-
     def get():
-        if muda.get() == 1:  # Aqui voce verifica. #
+        if muda.get() == 1:
             print("1")
         else:
             print("0")
-            return None  # Sempre use return none, assim ele retorna a nada, e faz com que nao fique lento. #
+            return None
         return None
-
-    muda = IntVar()  # Esse e o a
+    muda = IntVar()
     lb_carreteiro = Checkbutton(janela, text="text", variable=muda, command=get)
     lb_carreteiro.place(x=153, y=230)
-
     def get_data():
         nome_func = str (nome.get())
         dtNascto_func = str(dtNascto.get())
@@ -25,7 +21,7 @@ def cadastro () :
         nis_func = str(nis.get())
         codCBO_func = str(codCBO.get())
         codCateg_func = str(codCateg.get())
-        carreteiro_func = str (get())  # SE FOR 1 É CARRETEIRO
+        carreteiro_func = str (get())
         vrremun_func = str (wd_vrremun.get())
         conn = sqlite3.connect('autonomos.db')
         cursor = conn.cursor()
@@ -69,11 +65,9 @@ def cadastro () :
     bt_salvar = Button(janela, text='Salvar', width=10, command=get_data)
     bt_salvar.place(x=410, y=255)
     janela.geometry("530x300+100+100")
-    janela.transient(menu)
-    janela.focus_force()#
-    janela.grab_set()#
+    janela.focus_force()
+    janela.grab_set()
     janela.mainloop()
-
 def export_xml () :
     def cod():
         from xml.dom.minidom import Document
@@ -123,7 +117,6 @@ def export_xml () :
         vrRubr = doc.createElement('vrRubr')
         infoComplCont = doc.createElement('infoComplCont')
         codCBO = doc.createElement('codCBO')
-
         # child
         doc.appendChild(root)
         root.appendChild(evtRemun)
@@ -192,7 +185,6 @@ def export_xml () :
             inss = frete * 0.11
         else :
             frete = remun * 0.20
-
         # atributes
         root.setAttribute('xmlns', 'http://www.esocial.gov.br/schema/evt/evtRemun/v02_04_02')
         evtRemun.setAttribute('Id', ident)
@@ -248,10 +240,8 @@ def export_xml () :
     wd_id.place(x=150,y=60)
     export.geometry("530x300+100+100")
     export.mainloop()
-
 def alterar () :
     def alterar_data () :
-        # consertar essa parte
         def get_id2():
             id = wd_id.get()
             nome = str (novo_nome.get())
@@ -277,12 +267,9 @@ def alterar () :
             conn.close()
         def get2():
             if muda2.get() == 1:
-                print("S")
                 return "1"
             else:
-                print("N")
                 return "0"
-
         janela = Toplevel()
         janela.title("Alterar")
         wd_id = Entry(janela)
@@ -325,7 +312,6 @@ def alterar () :
         bt_salvar = Button(janela, text='Salvar', width=10, command=get_id2)
         bt_salvar.place(x=410, y=255)
         janela.geometry("530x300+100+100")
-        janela.mainloop()
         janela.transient(menu)
         janela.focus_force()  #
         janela.grab_set()  #
@@ -354,7 +340,6 @@ def excluir () :
     excluir = Toplevel ()
     excluir.geometry("530x300+100+100")
     excluir.mainloop()
-
 def menu () :
     menu = Tk()
     menu.title("Programa")
@@ -368,8 +353,4 @@ def menu () :
     bt.place(x=50,y=190)
     menu.geometry("530x300+100+100")
     menu.mainloop()
-#programa
 menu()
-#cadastro()
-#alterar()
-#export_xml ()
