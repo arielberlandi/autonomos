@@ -36,7 +36,6 @@ def cadastro () :
         conn.commit()
         print('Dados inseridos com sucesso.')
         conn.close()
-        janela.destroy()
     nome = Entry(janela)
     nome.place(x=100, y=50, width=420)
     lb_nome = Label(janela, text="Nome :")
@@ -70,8 +69,10 @@ def cadastro () :
     bt_salvar = Button(janela, text='Salvar', width=10, command=get_data)
     bt_salvar.place(x=410, y=255)
     janela.geometry("530x300+100+100")
+    janela.transient(menu)
+    janela.focus_force()#
+    janela.grab_set()#
     janela.mainloop()
-    janela.destroy()
 
 def export_xml () :
     def cod():
@@ -324,6 +325,10 @@ def alterar () :
         bt_salvar = Button(janela, text='Salvar', width=10, command=get_id2)
         bt_salvar.place(x=410, y=255)
         janela.geometry("530x300+100+100")
+        janela.mainloop()
+        janela.transient(menu)
+        janela.focus_force()  #
+        janela.grab_set()  #
         janela.mainloop()
     conn = sqlite3.connect('autonomos.db')
     cursor = conn.cursor()
