@@ -6,10 +6,10 @@ def cadastro () :
     janela.title("Cadastro")
     def get():
         if muda.get() == 1:
-            print("1")
+            return 1
         else:
             print("0")
-            return None
+            return 0
         return None
     muda = IntVar()
     lb_carreteiro = Checkbutton(janela, text="text", variable=muda, command=get)
@@ -120,8 +120,8 @@ def export_xml () :
         codRubr2 = doc.createElement('codRubr')
         ideTrabRubr2 = doc.createElement('ideTrabRubr')
         vrRubr2 = doc.createElement('vrRubr')
-
-        if lista[id-1][8] == 1 :
+        carreta = int(lista[id-1][7])
+        if carreta == 1 :
             codRubr3 = doc.createElement('codRubr')
             ideTrabRubr3 = doc.createElement('ideTrabRubr')
             vrRubr3 = doc.createElement('vrRubr')
@@ -167,7 +167,7 @@ def export_xml () :
         ideEstabLot.appendChild(remunPerApur)
         remunPerApur.appendChild(itensRemun)
 
-        if lista[id - 1][8] == 1:
+        '''if lista[id - 1][7] == 1:
             itensRemun.appendChild(codRubr1)
             itensRemun.appendChild(ideTrabRubr1)
             itensRemun.appendChild(vrRubr1)
@@ -175,6 +175,13 @@ def export_xml () :
             itensRemun.appendChild(codRubr2)
             itensRemun.appendChild(ideTrabRubr2)
             itensRemun.appendChild(vrRubr2)
+
+            txt26 = doc.createTextNode(s)
+            codRubr1.appendChild(txt26)
+            txt27 = doc.createTextNode("1")
+            ideTrabRubr1.appendChild(txt27)
+            txt28 = doc.createTextNode(t)
+            vrRubr1.appendChild(txt28)'''
 
 
         dmDev.appendChild(infoComplCont)
@@ -203,8 +210,8 @@ def export_xml () :
         q = str("C01S000003")#codLotacao
         r = str(lista[id-1][5])#codcbo
         rubricas = [442,440,3400,443,446,447]
-        carreta = lista[id-1][8]
-        remuneracao = lista[id-1][7]
+        carreta = float (lista[id-1][7])
+        remuneracao = float (lista[id-1][8])
         remun = float(remuneracao)
         if carreta == '1' :
             frete = remun * 0.20
@@ -363,9 +370,7 @@ def alterar () :
     SELECT * FROM autonomos;
     """)
     for linha in cursor.fetchall():
-        x = 0
-        lbemails.insert(x,linha)
-        x = x + 1
+        lbemails.insert(END,linha)
     conn.close()
     lblMat = Label(alterar,text="Escolha o Item Abaixo :")
     lblMat.place(x=200,y=20)
