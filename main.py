@@ -74,16 +74,13 @@ def export_xml () :
         conn = sqlite3.connect('autonomos.db')
         cursor = conn.cursor()
         id = int(wd_id.get())
-        #id_1 = id -1
-        lista = []
-        cursor.execute("""
-            SELECT * FROM autonomos;
-            """)
-        for linha in cursor.fetchall():
-            lista.append(linha[0:9])
-        # document create
+        print(cursor.execute("select * from autonomos where id = ?;",(id,)))
+        exporta_id = cursor.fetchall()
+        exportado = (exporta_id[0][0:9])
+        carreta = float (exportado[8])
+        # document xml create
         doc = Document()
-        # element
+        # elements
         root = doc.createElement('esocial')
         evtRemun = doc.createElement('evtRemun')
         ideEvento = doc.createElement('ideEvento')
@@ -111,31 +108,46 @@ def export_xml () :
         nrInsc2 = doc.createElement('nrInsc')
         codLotacao = doc.createElement('codLotacao')
         remunPerApur = doc.createElement('remunPerApur')
-        itensRemun = doc.createElement('itensRemun')
 
-        codRubr1 = doc.createElement('codRubr')
-        ideTrabRubr1 = doc.createElement('ideTrabRubr')
-        vrRubr1 = doc.createElement('vrRubr')
 
-        codRubr2 = doc.createElement('codRubr')
-        ideTrabRubr2 = doc.createElement('ideTrabRubr')
+#itens remun
+        ideTabRubr = doc.createElement('ideTabRubr')
+        ideTabRubr2 = doc.createElement('ideTabRubr')
+
+        qtdRubr = doc.createElement('qtdRubr')
+        qtdRubr2 = doc.createElement('qtdRubr')
+
+
+        vrRubr = doc.createElement('vrRubr')
         vrRubr2 = doc.createElement('vrRubr')
-        carreta = int(lista[id-1][7])
-        if carreta == 1 :
-            codRubr3 = doc.createElement('codRubr')
-            ideTrabRubr3 = doc.createElement('ideTrabRubr')
-            vrRubr3 = doc.createElement('vrRubr')
+        vrRubr3 = doc.createElement('vrRubr')
+
+        codRubr  = doc.createElement('codRubr')
+        codRubr2 = doc.createElement('codRubr')
+        codRubr3 = doc.createElement('codRubr')
+
+        itensRemun = doc.createElement('itensRemun')
+        itensRemun2 = doc.createElement('itensRemun')
+        itensRemun3 = doc.createElement('itensRemun')
 
 
         infoComplCont = doc.createElement('infoComplCont')
         codCBO = doc.createElement('codCBO')
+        '''				
+                        <itensRemun>
+							<codRubr>440</codRubr>
+							<ideTabRubr>1</ideTabRubr>fixo em 1
+							<qtdRubr>11.00</qtdRubr>fixo 11%
+							<vrRubr>30.90</vrRubr>valor não pode ser maior que 621,04 se passar deve setar o campo neste valor
+						</itensRemun>
+						<itensRemun>
+							<codRubr>442</codRubr>
+							<ideTabRubr>1</ideTabRubr>
+							<vrRubr>280.90</vrRubr>
+						</itensRemun>
+		'''
 
 
-        #< codRubr > 442 < / codRubr >
-        #< ideTabRubr > 1 < / ideTabRubr >
-        #< vrRubr > 280.90 < / vrRubr >
-        #< remunPerApur >
-        #< itensRemun >
 
         # child
         doc.appendChild(root)
@@ -166,28 +178,43 @@ def export_xml () :
         ideEstabLot.appendChild(codLotacao)
         ideEstabLot.appendChild(remunPerApur)
         remunPerApur.appendChild(itensRemun)
+        remunPerApur.appendChild(itensRemun2)
+        if carreta == "1" :
+            remunPerApur.appendChild(itensRemun3)
 
-        '''if lista[id - 1][7] == 1:
-            itensRemun.appendChild(codRubr1)
-            itensRemun.appendChild(ideTrabRubr1)
-            itensRemun.appendChild(vrRubr1)
+        itensRemun.appendChild(codRubr)
+        itensRemun.appendChild(ideTabRubr)
+        itensRemun.appendChild(qtdRubr)
+        itensRemun.appendChild(vrRubr)
 
-            itensRemun.appendChild(codRubr2)
-            itensRemun.appendChild(ideTrabRubr2)
-            itensRemun.appendChild(vrRubr2)
+        itensRemun2.appendChild(codRubr2)
+        itensRemun2.appendChild(ideTabRubr2)
+        itensRemun2.appendChild(vrRubr2)
 
-            txt26 = doc.createTextNode(s)
-            codRubr1.appendChild(txt26)
-            txt27 = doc.createTextNode("1")
-            ideTrabRubr1.appendChild(txt27)
-            txt28 = doc.createTextNode(t)
-            vrRubr1.appendChild(txt28)'''
-
+        '''if carreta == "1" :
+            itensRemun.appendChild(codRubr)
+            itensRemun.appendChild(ideTabRubr)
+            itensRemun.appendChild(vrRubr)
+            
+            
+            
+            '''
 
         dmDev.appendChild(infoComplCont)
         infoComplCont.appendChild(codCBO)
+
+
+
         # receive data
-        ident = str(lista[id-1][1])
+
+        def gera_id(cpf):
+
+            id = "ID1"
+            hora = str(datetime.now().strftime("%Y%m%d%H%M%S"))
+            id = (id + str(cpf)+ "00" + hora + "00001")
+            return id
+        ident = gera_id(exportado[3])
+
         a = str(1)#indretif
         b = str(1)#indapuracao
         data_atual = date.today()
@@ -197,27 +224,20 @@ def export_xml () :
         f = str("1.0")#verProc
         g = str(1)#tpinsc
         h = str("03582844")#nrinsc
-        i = str(lista[id-1][3])#cpf
-        j = str(lista[id-1][4])#nis
-        k = str(lista[id-1][1])#nome
-        nascimento =str(lista[id-1][2])
+        i = str(exportado[3])#cpf
+        j = str(exportado[4])#nis
+        k = str(exportado[1])#nome
+        nascimento =str(exportado[2])
         data = datetime.strptime(nascimento,"%Y%m%d").date()
         l = str (data)#DTNASCTO
         m = str(1)#idedmdev
-        n = str(lista[id-1][6])#codcateg
+        n = str(exportado[6])#codcateg
         o = str("1")#tpinsc
         p = str("03582844000186")#nrisnc
         q = str("C01S000003")#codLotacao
-        r = str(lista[id-1][5])#codcbo
+        r = str(exportado[5])#codcbo
         rubricas = [442,440,3400,443,446,447]
-        carreta = float (lista[id-1][7])
-        remuneracao = float (lista[id-1][8])
-        remun = float(remuneracao)
-        if carreta == '1' :
-            frete = remun * 0.20
-            inss = frete * 0.11
-        else :
-            frete = remun * 0.20
+
         # atributes
         root.setAttribute('xmlns', 'http://www.esocial.gov.br/schema/evt/evtRemun/v02_04_02')
         evtRemun.setAttribute('Id', ident)
@@ -259,15 +279,58 @@ def export_xml () :
         txt25 = doc.createTextNode(r)
         codCBO.appendChild(txt25)
 
-        s = str(rubricas[0])
-        t = str(remuneracao)
-        txt26 = doc.createTextNode(s)
-        codRubr1.appendChild(txt26)
-        txt27 = doc.createTextNode("1")
-        ideTrabRubr1.appendChild(txt27)
-        txt28 = doc.createTextNode(t)
-        vrRubr1.appendChild(txt28)
+        #s = str(rubricas[0])
+        #t = str(remuneracao)
+        carreta = exportado[7]
+        remuneracao = float (exportado[8])
 
+
+
+        def remun(remuneracao, carreta):
+            if carreta == "1":
+                remuneracao2 = remuneracao * 0.20
+                remuneracao1 = remuneracao2 * 0.11
+                return remuneracao, remuneracao2, remuneracao1
+            elif carreta == "0":
+                remuneracao2 = remuneracao * 0.20
+                return remuneracao, remuneracao2
+            else:
+                print("ERRO")
+
+        if carreta == "0" :
+            teste = remun(remuneracao,carreta)
+            print(teste)
+            dd = str(teste[0])
+            ddd = str(teste[1])
+        else :
+            teste = remun(remuneracao, carreta)
+            print(teste)
+            dd = str(teste[0])
+            ddd = str(teste[1])
+            dddd = str(teste[2])
+
+
+
+        txt29 = doc.createTextNode("440")
+        codRubr.appendChild(txt29)
+
+        txt28 = doc.createTextNode("1")
+        ideTabRubr.appendChild(txt28)
+
+        txt33 = doc.createTextNode('11.0')
+        qtdRubr.appendChild(txt33)
+
+        txt27 = doc.createTextNode(ddd)
+        vrRubr.appendChild(txt27)
+
+        txt30 = doc.createTextNode("442")
+        codRubr2.appendChild(txt30)
+
+        txt31 = doc.createTextNode("1")
+        ideTabRubr2.appendChild(txt31)
+
+        txt32 = doc.createTextNode(dd)
+        vrRubr2.appendChild(txt32)
 
         nomedoxml = ident + ".xml"
         doc.writexml(open(nomedoxml, 'w'),
