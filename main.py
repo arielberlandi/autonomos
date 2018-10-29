@@ -112,11 +112,31 @@ def export_xml () :
         codLotacao = doc.createElement('codLotacao')
         remunPerApur = doc.createElement('remunPerApur')
         itensRemun = doc.createElement('itensRemun')
-        codRubr = doc.createElement('codRubr')
-        ideTrabRubr = doc.createElement('ideTrabRubr')
-        vrRubr = doc.createElement('vrRubr')
+
+        codRubr1 = doc.createElement('codRubr')
+        ideTrabRubr1 = doc.createElement('ideTrabRubr')
+        vrRubr1 = doc.createElement('vrRubr')
+
+        codRubr2 = doc.createElement('codRubr')
+        ideTrabRubr2 = doc.createElement('ideTrabRubr')
+        vrRubr2 = doc.createElement('vrRubr')
+
+        if lista[id-1][8] == 1 :
+            codRubr3 = doc.createElement('codRubr')
+            ideTrabRubr3 = doc.createElement('ideTrabRubr')
+            vrRubr3 = doc.createElement('vrRubr')
+
+
         infoComplCont = doc.createElement('infoComplCont')
         codCBO = doc.createElement('codCBO')
+
+
+        #< codRubr > 442 < / codRubr >
+        #< ideTabRubr > 1 < / ideTabRubr >
+        #< vrRubr > 280.90 < / vrRubr >
+        #< remunPerApur >
+        #< itensRemun >
+
         # child
         doc.appendChild(root)
         root.appendChild(evtRemun)
@@ -146,12 +166,17 @@ def export_xml () :
         ideEstabLot.appendChild(codLotacao)
         ideEstabLot.appendChild(remunPerApur)
         remunPerApur.appendChild(itensRemun)
-        itensRemun.appendChild(codRubr)
-        itensRemun.appendChild(ideTrabRubr)
-        itensRemun.appendChild(vrRubr)
-        itensRemun.appendChild(codRubr)
-        itensRemun.appendChild(ideTrabRubr)
-        itensRemun.appendChild(vrRubr)
+
+        if lista[id - 1][8] == 1:
+            itensRemun.appendChild(codRubr1)
+            itensRemun.appendChild(ideTrabRubr1)
+            itensRemun.appendChild(vrRubr1)
+
+            itensRemun.appendChild(codRubr2)
+            itensRemun.appendChild(ideTrabRubr2)
+            itensRemun.appendChild(vrRubr2)
+
+
         dmDev.appendChild(infoComplCont)
         infoComplCont.appendChild(codCBO)
         # receive data
@@ -177,6 +202,7 @@ def export_xml () :
         p = str("03582844000186")#nrisnc
         q = str("C01S000003")#codLotacao
         r = str(lista[id-1][5])#codcbo
+        rubricas = [442,440,3400,443,446,447]
         carreta = lista[id-1][8]
         remuneracao = lista[id-1][7]
         remun = float(remuneracao)
@@ -225,6 +251,17 @@ def export_xml () :
         codLotacao.appendChild(txt18)
         txt25 = doc.createTextNode(r)
         codCBO.appendChild(txt25)
+
+        s = str(rubricas[0])
+        t = str(remuneracao)
+        txt26 = doc.createTextNode(s)
+        codRubr1.appendChild(txt26)
+        txt27 = doc.createTextNode("1")
+        ideTrabRubr1.appendChild(txt27)
+        txt28 = doc.createTextNode(t)
+        vrRubr1.appendChild(txt28)
+
+
         nomedoxml = ident + ".xml"
         doc.writexml(open(nomedoxml, 'w'),
                      addindent='    ',
@@ -338,6 +375,23 @@ def alterar () :
 
 def excluir () :
     excluir = Toplevel ()
+    def get_id () :
+        id = wd_id.get()
+        conn = sqlite3.connect('autonomos.db')
+        cursor = conn.cursor()
+        cursor.execute("""
+        DELETE from autonomos
+        WHERE id = ?
+        """, (id))
+        conn.commit()
+        print('Dados atualizados com sucesso.')
+        conn.close()
+    wd_id = Entry(excluir)
+    wd_id.place(x=100, y=20)
+    lb_wdid = Label(excluir, text="ID :")
+    lb_wdid.place(x=10, y=20)
+    a = Button(excluir, text="Excluir", command=get_id)
+    a.place(x=250,y=55)
     excluir.geometry("530x300+100+100")
     excluir.mainloop()
 def menu () :
