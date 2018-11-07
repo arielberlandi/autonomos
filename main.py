@@ -133,19 +133,6 @@ def export_xml () :
 
         infoComplCont = doc.createElement('infoComplCont')
         codCBO = doc.createElement('codCBO')
-        '''				
-                        <itensRemun>
-							<codRubr>440</codRubr>
-							<ideTabRubr>1</ideTabRubr>fixo em 1
-							<qtdRubr>11.00</qtdRubr>fixo 11%
-							<vrRubr>30.90</vrRubr>valor não pode ser maior que 621,04 se passar deve setar o campo neste valor
-						</itensRemun>
-						<itensRemun>
-							<codRubr>442</codRubr>
-							<ideTabRubr>1</ideTabRubr>
-							<vrRubr>280.90</vrRubr>
-						</itensRemun>
-		'''
 
 
 
@@ -191,14 +178,6 @@ def export_xml () :
         itensRemun2.appendChild(ideTabRubr2)
         itensRemun2.appendChild(vrRubr2)
 
-        '''if carreta == "1" :
-            itensRemun.appendChild(codRubr)
-            itensRemun.appendChild(ideTabRubr)
-            itensRemun.appendChild(vrRubr)
-            
-            
-            
-            '''
 
         dmDev.appendChild(infoComplCont)
         infoComplCont.appendChild(codCBO)
@@ -236,7 +215,6 @@ def export_xml () :
         p = str("03582844000186")#nrisnc
         q = str("C01S000003")#codLotacao
         r = str(exportado[5])#codcbo
-        rubricas = [442,440,3400,443,446,447]
 
         # atributes
         root.setAttribute('xmlns', 'http://www.esocial.gov.br/schema/evt/evtRemun/v02_04_02')
@@ -279,8 +257,6 @@ def export_xml () :
         txt25 = doc.createTextNode(r)
         codCBO.appendChild(txt25)
 
-        #s = str(rubricas[0])
-        #t = str(remuneracao)
         carreta = exportado[7]
         remuneracao = float (exportado[8])
 
@@ -288,20 +264,26 @@ def export_xml () :
 
         def remun(remuneracao, carreta):
             if carreta == "1":
-                remuneracao2 = remuneracao * 0.20
+                remuneracao2 = float(({}).format(remuneracao * 0.20))
                 remuneracao1 = remuneracao2 * 0.11
                 return remuneracao, remuneracao2, remuneracao1
             elif carreta == "0":
-                remuneracao2 = remuneracao * 0.20
+               
+                remuneracao * 0.11
+                remuneracao2 = ("{:.2f}".format(remuneracao * 0.11))
+                remuneracao = ("{:.2f}".format(remuneracao))
+                
+                
                 return remuneracao, remuneracao2
             else:
                 print("ERRO")
 
         if carreta == "0" :
             teste = remun(remuneracao,carreta)
+
             print(teste)
-            dd = str(teste[0])
-            ddd = str(teste[1])
+            dd = str (teste[0])
+            ddd = str (teste[1])
         else :
             teste = remun(remuneracao, carreta)
             print(teste)
@@ -332,7 +314,7 @@ def export_xml () :
         txt32 = doc.createTextNode(dd)
         vrRubr2.appendChild(txt32)
 
-        nomedoxml = ident + ".xml"
+        nomedoxml = ("01_01_s-1200_")+ ident[16:24] + "_" + ident[24:30] + ".xml"
         doc.writexml(open(nomedoxml, 'w'),
                      addindent='    ',
                      newl='\n')
