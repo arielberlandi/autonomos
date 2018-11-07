@@ -26,9 +26,9 @@ def cadastro () :
         conn = sqlite3.connect('autonomos.db')
         cursor = conn.cursor()
         cursor.execute("""
-        INSERT INTO autonomos (nome, dtnscto, cpf, nis, codcbo, codcateg, carreteiro, vrremun)
+        INSERT INTO autonomos (nome, dtnscto, cpf, nis, codcbo, codcateg, vrremun, carreteiro)
         VALUES (?,?,?,?,?,?,?,?)
-        """, (nome_func, dtNascto_func, cpf_func, nis_func, codCBO_func, codCateg_func, carreteiro_func, vrremun_func))
+        """, (nome_func, dtNascto_func, cpf_func, nis_func, codCBO_func, codCateg_func, vrremun_func, carreteiro_func))
         conn.commit()
         print('Dados inseridos com sucesso.')
         conn.close()
